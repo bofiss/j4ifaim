@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Liers extends Model
 {
-    public function menus(){
+    public function menu(){
         return this.belongToMany('App\Menus');
     }
-    public function reservations(){
+    public function reservation(){
         return this.belongToMany('App\Reservations');
     }
 }

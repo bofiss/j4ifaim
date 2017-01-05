@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLiersTable extends Migration
+class CreateMenusReservationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateLiersTable extends Migration
      */
     public function up()
     {
-         Schema::create('liers', function (Blueprint $table) {
+         Schema::create('Menus_Reservations', function (Blueprint $table) {
             $table->integer('reservation_id')->unsigned();
             $table->foreign('reservation_id')->references('id')->on('reservations');
-            $table->integer('client_id')->unsigned();
-            $table->foreign('client_id')->references('id')->on('clients');
+            $table->integer('menu_id')->unsigned();
+            $table->foreign('menu_id')->references('id')->on('menus');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateLiersTable extends Migration
      */
     public function down()
     {
-         Schema::dropIfExists('liers');
+         Schema::dropIfExists('Menus_Reservations');
     }
 }

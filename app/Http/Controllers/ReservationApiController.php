@@ -3,21 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests;
 use EllipseSynergie\ApiResponse\Contracts\Response;
 use App\Menu;
-use App\Transformer\MenuTransformer;
+use App\Client;
+use App\Repositories\ReservationRepository;
+use App\Reservation;
+use App\Transformer\ReservationTransformer;
 
 class ReservationApiController extends Controller
 {
-    
-    
-    protected $respose;
- 
+
+
+    protected $response;
+
     public function __construct(Response $response)
     {
         $this->response = $response;
     }
- 
+
     /**
      * Display a listing of the resource.
      *
@@ -49,7 +53,31 @@ class ReservationApiController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+      $menu = Menu::where('titre', '=', $request->input('menu'))->get(['id']);
+
+      $client = new Client();
+      $client->nom = $request->input('nom');
+      $client->tel = $request->input('tel');
+      $client->email = $request->input('email');
+      $reservation = new Reservation();
+      $reservation->heure_reservation = $request->input('heure_reservation');
+      $reservation->nombre_de_personne= $request->input('nbpersonne');
+
+      if($client->save() ) {
+        $reservation->client_id= $client['id'];
+       if($reservation->save()){
+         $reservation->menus()->attach($menu);
+         $MyReservation = new ReservationRepository($client->nom,$client->tel, $client->email, $request->input('menu'),$reservation->heure_reservation,   $reservation->nombre_de_personne );
+
+           return $this->response->withItem($MyReservation, new  ReservationTransformer());
+       }else{
+           return $this->response->errorInternalError('Could not created a reservation');
+       }
+
+     }
+
+
     }
 
     /**
